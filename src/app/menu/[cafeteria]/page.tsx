@@ -20,24 +20,26 @@ const MenuCafeteria: React.FC = () => {
     const { cafeteria } = useParams() as { cafeteria: string };
 
     const [menu, setMenu] = React.useState<{ items: MenuItem[] } | null>(null);
-    const [error, setError] = React.useState<string | null>(null);
+    const [fetchError, setFetchError] = React.useState<string | null>(null); // Renombrado 'error' para evitar conflictos
 
     React.useEffect(() => {
         const loadMenu = async () => {
             try {
                 const menuData = await fetchMenu(cafeteria);
                 setMenu(menuData);
-            } catch (error) {
-                setError('Error al cargar el menú');
+            } catch {
+                setFetchError('Error al cargar el menú'); // Uso del nuevo nombre
             }
         };
         loadMenu();
     }, [cafeteria]);
 
-    if (error) {
-        return <div>{error}</div>;
+    // Mostrar el mensaje de error si algo falla al cargar el menú
+    if (fetchError) {
+        return <div>{fetchError}</div>;
     }
 
+    // Mientras se carga el menú, muestra un mensaje de carga
     if (!menu) {
         return <div>Cargando...</div>;
     }
